@@ -1,9 +1,9 @@
 package com.whatsapp.whatsappmessagingread.service;
 
-import java.util.List;
+import org.springframework.data.domain.Slice;
 
 import com.whatsapp.whatsappmessagingread.entity.ChatMessage;
 
 public interface ChatMessageService {
-    List<ChatMessage> getChatMessages(String chatId);
+    Slice<ChatMessage> getChatMessages(String chatId, int pageNumber);
 }

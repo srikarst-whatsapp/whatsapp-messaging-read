@@ -1,23 +1,28 @@
 package com.whatsapp.whatsappmessagingread.service;
 
-import com.whatsapp.whatsappmessagingread.entity.Chat;
 import com.whatsapp.whatsappmessagingread.entity.ChatMessage;
+import com.whatsapp.whatsappmessagingread.repository.ChatMessageRepository;
 import com.whatsapp.whatsappmessagingread.repository.ChatRepository;
 
 import lombok.AllArgsConstructor;
 
-import java.util.List;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
 public class ChatMessageServiceImpl implements ChatMessageService {
+    ChatMessageRepository chatMessageRepository;
     ChatRepository chatRepository;
 
-    public List<ChatMessage> getChatMessages(String chatId) {
+    public Slice<ChatMessage> getChatMessages(String chatId, int pageNumber) {
         @SuppressWarnings("null")
-        Chat chat = chatRepository.findById(chatId).get();
-        return chat.getMessages();
+        Pageable firstPageWithTwoElements = PageRequest.of(pageNumber, 10, Sort.by("createdTimestamp").descending());
+        Slice<ChatMessage> chatMessages = chatMessageRepository.findAllByChat(chatRepository.findById(chatId).get(),
+                firstPageWithTwoElements);
+        return chatMessages;
     }
 }
