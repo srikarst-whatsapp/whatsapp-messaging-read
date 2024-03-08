@@ -17,16 +17,19 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated())
-                .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
-                .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests((authorize) -> authorize
+                                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**")
+                                                .permitAll()
+                                                .anyRequest().authenticated())
+                                .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
+                                .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                return http.build();
+        }
 
 }
